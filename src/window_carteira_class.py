@@ -89,5 +89,5 @@ class Carteira():
 
     # TESTE, EMPRESA DEVE SER COLOCADA A PARTIR DO WEBSCRAPPER
     def registrar(cls):
-        str_statement = f"{cls.typevar.get()}    {cls.codvar.get()}    EMPRESA"
+        str_statement = f"{cls.codvar.get()}    {cls.typevar.get()}    EMPRESA"
         cls.cbx.insert(END, str_statement)

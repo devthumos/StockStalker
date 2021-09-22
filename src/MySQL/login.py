@@ -1,14 +1,17 @@
 import pymysql as py
 
-class Login:
+class LoginMySQL:
     def __init__(cls):
         # Criando conexão
-        cls.con = py.connect(
-            host="localhost",
-            user="root",
-            password="",
-            database="action_stalker"
-            )
+        try:
+            cls.con = py.connect(
+                host="localhost",
+                user="root",
+                password="",
+                database="action_stalker"
+                )
+        except:
+            print("ERRO, Não Foi Possível Conectar ao Banco de Dados")
 
 
     """

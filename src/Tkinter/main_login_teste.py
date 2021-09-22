@@ -1,4 +1,4 @@
-from window_login_class import Login
+from window_login_class import LoginWindow
 
 if __name__ == "__main__":
-    jan_lgn = Login()
+    jan_lgn = LoginWindow()

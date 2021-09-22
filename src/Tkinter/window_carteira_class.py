@@ -1,12 +1,15 @@
 from tkinter import *
 from tkinter.font import *
 from tkinter import ttk
+from src.MySQL.registro import RegistroMySQL
 
 
-class Carteira():
+class WindowCarteira():
 
 
     def __init__(cls):
+        cls.object_registro = RegistroMySQL()
+
         wndcarteira = Tk()
         wndcarteira.title("ActionStalker")
         wndcarteira.geometry("800x500+100+100")
@@ -76,6 +79,12 @@ class Carteira():
         cls.cbx.configure(xscrollcommand=scrl_hrntl.set)
         cls.cbx.pack(fill=BOTH, expand=True)
 
+        # Pré adicionando todos os elementos do banco de dados na listbox
+        registros = cls.object_registro.list_elements()
+        for i in registros:
+            str_statement = f'{i[0]}    {i[1]}    {i[2]}'
+            cls.cbx.insert(END, str_statement)
+
         # POLIMENTOS
         # Espaçamento dentro do frame "space_frm" que é child do frame "rgst_cod"
         for child in space_frm.winfo_children():
@@ -88,6 +97,7 @@ class Carteira():
         wndcarteira.mainloop()
 
     # TESTE, EMPRESA DEVE SER COLOCADA A PARTIR DO WEBSCRAPPER
-    def registrar(cls):
-        str_statement = f"{cls.codvar.get()}    {cls.typevar.get()}    EMPRESA"
+    def registrar(cls, *args):
+        registro = cls.object_registro.registrar_registros(cls.codvar.get(), cls.typevar.get())
+        str_statement = f'{cls.codvar.get()}    {cls.typevar.get()}    EMPRESA'
         cls.cbx.insert(END, str_statement)

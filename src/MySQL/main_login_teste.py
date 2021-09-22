@@ -1,7 +1,7 @@
-from login import Login
+from login import LoginMySQL
 
 if __name__ == "__main__":
-    log_object = Login()
+    log_object = LoginMySQL()
 
             # TESTE
     while True:

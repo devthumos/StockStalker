@@ -1,12 +1,15 @@
 from tkinter import *
 from tkinter.font import *
 from tkinter import ttk
+from src.MySQL.login import LoginMySQL
 
 
-class Login():
+class LoginWindow():
 
 
     def __init__(cls):
+        cls.object_login = LoginMySQL()
+
         wndlogin = Tk()
         wndlogin.title("ActionStalker")
         wndlogin.geometry("500x250+100+100")
@@ -60,24 +63,25 @@ class Login():
 
 
     def logar(cls, *args):
-        try:
-            if cls.uservar.get() == "admin" and cls.passvar.get() == "admin":
-                cls.uservar.set("")
-                cls.passvar.set("")
-
-                cls.lbl["text"] = "ACESSO PERMITIDO"
-            else:
-                cls.uservar.set("")
-                cls.passvar.set("")
-
-                cls.lbl["text"] = "ACESSO NEGADO"
-        except ValueError:
-            cls.uservar.set("DADOS INVÁLIDOS")
-            cls.passvar.set("DADOS INVÁLIDOS")
-
-            cls.lbl["text"] = "DADOS INVÁLIDOS"
+        credenciais = cls.object_login.verificacao_login(cls.uservar.get(), cls.passvar.get())
+        cls.passvar.set("")
+        cls.uservar.set("")
+        if credenciais:
+            cls.lbl["text"] = "ACESSO PERMITIDO"
+        else:
+            cls.lbl["text"] = "ACESSO NEGADO"
 
 
-    def registrar(cls, *args):
-        pass
 
+    def registrar(cls):
+        registro = cls.object_login.registrar_login(cls.uservar.get(), cls.passvar.get())
+
+        if registro == None:
+            cls.lbl["text"] = f"Usuário \"{cls.uservar.get()}\" Já Existente, Insira Outro Usuário"
+        elif registro == True:
+            cls.lbl["text"] = f"Usuário \"{cls.uservar.get()}\" Cadastrado Com Sucesso"
+        else:
+            cls.lbl["text"] = f"ERRO, Não Foi Possível Registrar o Usuário \"{cls.uservar.get()}\""
+
+        cls.passvar.set("")
+        cls.uservar.set("")

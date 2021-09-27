@@ -7,7 +7,7 @@ import re
 acaodigitada = input('Digite a bdr aqui    ').lower()
 acaodigitada = acaodigitada.replace(" ", "")                    #remove espaços digitados erradamente
 
-url = "https://statusinvest.com.br/bdr/"
+url = "https://statusinvest.com.br/bdrs/"
 
 url = url+acaodigitada
 #print(url)

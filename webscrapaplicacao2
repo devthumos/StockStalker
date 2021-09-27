@@ -1,0 +1,27 @@
+#aplicação 2 webscraping para conseguir acessar o módulo de pesquisa do site
+
+from bs4 import BeautifulSoup
+import requests                                                 #biblioteca para usar sites web
+import re
+
+acaodigitada = input('Digite a bdr aqui    ').lower()
+acaodigitada = acaodigitada.replace(" ", "")                    #remove espaços digitados erradamente
+
+url = "https://statusinvest.com.br/bdr/"
+
+url = url+acaodigitada
+#print(url)
+
+result = requests.get(url).text                                 #função que pega o html e poe em formato texto
+
+doc = BeautifulSoup(result, "html.parser")                      #função para percorrer o html
+
+
+tag = doc.find_all(class_ = "value", limit = 1)                 #função para procurar classe com value como parametro, limite de 1
+
+print(tag)                                                      #print do valor da bdr ainda não extraido por completo da tag
+
+
+
+
+#falta extrair o valor da tag e generalizar para todos os tipos de investimentos e verificar se todos utiliizam a mesma classe pro valor

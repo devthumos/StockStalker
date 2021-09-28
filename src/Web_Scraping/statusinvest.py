@@ -1,3 +1,4 @@
+import time
 import requests
 from bs4 import BeautifulSoup
 import pandas as pd
@@ -15,8 +16,9 @@ def type_state(state: str) -> str:
     # Assim, caso a lista seja nula, quer dizer que o state existe, caso a lista não seja nula, isto é, com elemento
     # "OPS . . .", isso quer dizer que o state não existe
 
+    time.sleep(2)
     print(f"Picking {state} type...")
-    lst_state_urls = [f"https://statusinvest.com.br/acoes/{state}", f"https://statusinvest.com.br/fundo-imobiliarios/{state}",
+    lst_state_urls = [f"https://statusinvest.com.br/acoes/{state}", f"https://statusinvest.com.br/fundos-imobiliarios/{state}",
                     f"https://statusinvest.com.br/bdrs/{state}", f"https://statusinvest.com.br/fundos-de-investimento/{state}",
                     f"https://statusinvest.com.br/tesouro/{state}"]
 
@@ -41,7 +43,7 @@ def type_state(state: str) -> str:
     elif exist == 0:
         return ("acoes/", lst_state_urls[exist]) # Retornando o tipo e a respectiva url existente
     elif exist == 1:
-        return ("fundo-imobiliario/", lst_state_urls[exist])
+        return ("fundos-imobiliarios/", lst_state_urls[exist])
     elif exist == 2:
         return ("bdrs/", lst_state_urls[exist])
     elif exist == 3:
@@ -50,6 +52,8 @@ def type_state(state: str) -> str:
         return ("tesouro/", lst_state_urls[exist])
 
 
+# A função retorna erro para tesouros e fundos de investimento, temos que fazer outra função
+# Específica para tesouros e fundos de investimento
 def scrap_state_info(state: str) -> dict:
     """
     Retorna informações da ação escolhida
@@ -67,11 +71,19 @@ def scrap_state_info(state: str) -> dict:
     page = requests.get(typestate[1])
 
     soup = BeautifulSoup(page.content, "html.parser")
-    indicadores = soup.select(".info.special.w-100.w-md-33.w-lg-20") # Onde está o valor atual
 
-    return ([ind.select(".value")[0].text for ind in indicadores], typestate[0][0:-1])
+    div_indicadores = soup.select(".top-info.has-special.d-flex.justify-between.flex-wrap") # Onde está o valor atual
+    # [0] = VALOR ATUAL DO ATIVO, [1] = MIN. 52 SEMANAS, [2] = MAX. 52 semanas, [3] DIVIDEND YIELD ULTIMOS 12 MESES
+    # [4] = VALORIZAÇÃO NO PREÇO DO ATIVO COM BASE NOS ÚLTIMOS 12 MESES
+    indicadores = [ind.text for ind in div_indicadores[0].select(".value")]
+    nome_empresa = soup.select(".company-description.w-100.w-md-70.ml-md-5") # div onde está o nome da empresa
+
+    return (indicadores, typestate[0][0:-1],
+            [ind.select(".d-block.fs-4.m-0.fw-600.text-main-green-dark")[0].text for ind in nome_empresa])
 
 
 cod = input("Insira o Código de Negociação: ")
 value = scrap_state_info(cod)
-print(f"Tipo de Negociação: {value[1]}\nValor Atual: {value[0][0]}")
+print(f"Empresa: {value[2][0]}\nTipo de Negociação: {value[1]}")
+print(f"Indicadores:\n\tValor Atual: {value[0][0]}\n\tValor Min. 52 Semanas: {value[0][1]}\n\tValor Min. 52 Semanas: {value[0][2]}")
+print(f"\tTaxa de Dividendo nos ùltimos 12 meses: {value[0][3]}\n\tValorização no Preço do Ativo durante 12 Meses: {value[0][4]}")

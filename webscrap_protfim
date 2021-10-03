@@ -36,7 +36,7 @@ for enum in range(0, 4):
         if tag.string == 'OPS. . .':
             #print(f'error, testar a outra url')
             error = 1
-            print(enum)
+            #print(enum)
 
     else:
         error = 0

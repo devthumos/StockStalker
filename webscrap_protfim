@@ -1,0 +1,98 @@
+#aplicação 2 webscraping para conseguir acessar o módulo de pesquisa do site
+
+import soupsieve.css_parser
+from bs4 import BeautifulSoup
+import requests                                                 #biblioteca para usar sites web
+import re
+
+acaodigitada = input('Digite o papel a ser pesquisado aqui:    ').lower()
+acaodigitada = acaodigitada.replace(" ", "")                    #remove espaços digitados erradamente
+
+
+#
+#
+#
+#
+
+
+#identificando o tipo de papel digitado
+
+urla = "https://statusinvest.com.br/acoes/"+acaodigitada
+urlfii = "https://statusinvest.com.br/fundos-imobiliarios/"+acaodigitada
+urlfin = "https://statusinvest.com.br/fundos-de-investimento/"+acaodigitada
+urlbdr = "https://statusinvest.com.br/bdrs/"+acaodigitada
+
+
+urls = [urla, urlfii, urlfin, urlbdr]
+enum = 0
+error = 0
+
+for enum in range(0, 4):
+    result = requests.get(urls[enum]).text
+    doc = BeautifulSoup(result, "html.parser")
+
+    tag = doc.find(class_="d-block mb-1 fw-900")
+    if(hasattr(tag, 'OPS. . .')):                               #verificando se o objeto possui atributo string na classe
+        if tag.string == 'OPS. . .':
+            #print(f'error, testar a outra url')
+            error = 1
+            print(enum)
+
+    else:
+        error = 0
+        break
+
+
+
+
+if(error == 1):
+    print(f'Papel digitado inexistente')
+    exit()
+
+
+result = requests.get(urls[enum]).text
+doc = BeautifulSoup(result, "html.parser")
+
+#print(urls[enum])
+
+#fim da identificacao do papel
+#
+#
+#
+#
+#
+
+
+#começo da busca dos valores
+
+
+tag = doc.find(class_ = "value")                                #função para procurar classe com value como parametro, limite de 1
+
+
+valorpapel = tag.string                                              #captura a string da tag
+print("R$: ", valorpapel)
+
+
+
+tag = doc.find_all(class_ = "value")                                 #procurando pela classe com o valor do papel
+
+contador = 0
+
+list = ["","","","",""]
+
+for tags in tag[:5]:
+    list[contador] = tags
+    contador = contador+1
+
+
+min52sem = list[1].string                                               #valor minimo em 52 semanas
+max52sem = list[2].string                                               #valor maximo em 52 semanas
+dividendyield = list[3].string                                          #dividend yield
+valorizacao = list[4].string                                            #valorizacao em 12 meses
+
+
+#fim da busca dos valores
+#
+#
+#
+#

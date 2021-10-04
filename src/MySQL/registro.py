@@ -30,29 +30,20 @@ class RegistroMySQL:
 
     """
     Função de registro de registros
-    retorna None, caso exista o código no banco de dados
-    retorna True, caso o registro seja bem sucedido
-    retorna False, caso ocorra um erro no registro   
+    retorna False, caso exista o código no banco de dados  
     """
-    def registrar_registros(cls, codigo, tipo):
-        command = f"SELECT codigo FROM registros WHERE codigo=\"{codigo}\""
+    def registrar_registros(cls, codigo, indicadores):
         cursor = cls.con.cursor()
-        cursor.execute(command)
 
-        pesq = cursor.fetchall()
+        try:
+            command = "INSERT INTO registros(codigo, tipo, indicador_01, indicador_02, indicador_03, indicador_04, label_01, label_02, label_03, label_04) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
+            valor = (codigo, indicadores[1], indicadores[0][0][1], indicadores[0][1][1], indicadores[0][2][1], indicadores[0][3][1], indicadores[0][0][0], indicadores[0][1][0], indicadores[0][2][0], indicadores[0][3][0])
 
-        if pesq:
-            return None
-        else:
-            command = "INSERT INTO registros(codigo, tipo, empresa) VALUES (%s, %s, %s)"
-            valor = (codigo, tipo, "EMPRESA")
+            cursor.execute(command, valor)
+            cls.con.commit()
+        except:
+            return False
 
-            try:
-                cursor.execute(command, valor)
-                cls.con.commit()
-                return True
-            except:
-                return False
 
     """
     Função de registro de login

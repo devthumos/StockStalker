@@ -13,7 +13,7 @@ class WindowCarteira():
 
         wndcarteira = Tk()
         wndcarteira.title("ActionStalker")
-        wndcarteira.geometry("800x500+100+100")
+        wndcarteira.geometry("925x300+100+100")
 
         # Frame principal "mainframe"
         mainframe = ttk.Frame(wndcarteira)
@@ -23,19 +23,20 @@ class WindowCarteira():
 
         # Frame "lbl_lgin_frm" que conterá label e button, label "LOGIN", button "Config"
         # Frame lbl_lgin_frm
-        lbl_lgin_frm = Frame(mainframe, bg="#58636E")
+        lbl_lgin_frm = Frame(mainframe, bg="black")
         lbl_lgin_frm.pack(fill=X)
         lbl_lgin_frm.columnconfigure(0, weight=1)
         lbl_lgin_frm.rowconfigure(0, weight=1)
         # Label "CARTEIRA STALKER"
-        lbl_log = Label(lbl_lgin_frm, text="CARTEIRA STALKER", background="#58636E", fg="white",
-                        font=Font(family="Comic Sans Ms", size=15, weight="bold"))
-        lbl_log.grid(row=0, column=0, sticky=(N, S, W, E))
+        lbl_log = Label(lbl_lgin_frm, text="CARTEIRA STALKER", background="black", fg="white",
+                        font=Font(family="Arial Black", size=20, weight="bold"))
+        lbl_log.pack()
+        lbl_log.pack_configure()
         # Label "img_sett"
-        lbl_sett = Label(lbl_lgin_frm, text="img_sett", background="#58636E", fg="white",
-                         font=Font(family="Comic Sans Ms", size=15, weight="bold"))
-        lbl_sett.grid(row=0, column=1, sticky=(E))
-        lbl_sett.grid_configure(padx=5)
+        # lbl_sett = Label(lbl_lgin_frm, text="img_sett", background="black", fg="white",
+        #                  font=Font(family="Comic Sans Ms", size=15, weight="bold"))
+        # lbl_sett.grid(row=0, column=1, sticky=(E))
+        # lbl_sett.grid_configure(padx=5)
 
         # Frame "rgst_cod" que conterá labels, button, Entry Widgets
         # Frame rgst_cod
@@ -46,19 +47,21 @@ class WindowCarteira():
         # Frame "space_frm" responsável pelo espaçamento dentro do Frame "rgst_cod"
         space_frm = Frame(rgst_cod)
         space_frm.pack()
+        space_frm.pack_configure(padx="0 70")
         # Label text="Código" e Entry "cod_entry"
         cls.codvar = StringVar()
-        ttk.Label(space_frm, text="Código",
-                  font=Font(family="Comic Sans Ms", size=10, weight="normal")).grid(row=0, column=0, sticky=(E))
-        cod_entry = Entry(space_frm, width=30, textvariable=cls.codvar)
+        ttk.Label(space_frm, text="Código", foreground="black",
+                  font=Font(family="Arial Black", size=12, weight="bold", underline=True)).grid(row=0, column=0, sticky=(E))
+        cod_entry = Entry(space_frm, width=51, textvariable=cls.codvar)
         cod_entry.grid(row=0, column=1, sticky=(W))
         # Button "rgst_btn" e Legendas, não vou fazer as legendas agora
-        rgst_btn = Button(space_frm, text="Registrar", bg="#58636E", fg="white", command=cls.registrar) # TESTE
+        rgst_btn = Button(space_frm, text="Registrar", bg="black", fg="white", command=cls.registrar,
+                          font=Font(family="Arial Black", size=10, weight="normal")) # TESTE
         rgst_btn.grid(row=1, column=1, sticky=(N, S, W, E))
 
         # Frame Combobox "cbx_frn" que conterá o combobox e os scrollbars
         # Frame Combobox "cbx_frn"
-        cbx_frn = Frame(mainframe)
+        cbx_frn = Frame(mainframe, padx="10", pady="10")
         cbx_frn.pack(fill=BOTH)
         cbx_frn.columnconfigure(0, weight=1)
         cbx_frn.rowconfigure(0, weight=1)
@@ -96,7 +99,7 @@ class WindowCarteira():
     def into_wbscrapper(cls):
         wb = Webscrapper()
         indicadores = wb.main(cls.codvar.get())
-        msg = f"CÓDIGO:{cls.codvar.get()} | TIPO:{indicadores[1]} | {indicadores[0][0][0]}:{indicadores[0][0][1]} | {indicadores[0][1][0]}:{indicadores[0][1][1]} | {indicadores[0][2][0]}:{indicadores[0][2][1]} | {indicadores[0][3][0]}:{indicadores[0][3][1]}"
+        msg = f"CÓDIGO:{cls.codvar.get().replace('-', ' ')} | TIPO:{indicadores[1]} | {indicadores[0][0][0]}:{indicadores[0][0][1]} | {indicadores[0][1][0]}:{indicadores[0][1][1]} | {indicadores[0][2][0]}:{indicadores[0][2][1]} | {indicadores[0][3][0]}:{indicadores[0][3][1]}"
         return indicadores, msg
 
     # TESTE, EMPRESA DEVE SER COLOCADA A PARTIR DO WEBSCRAPPER

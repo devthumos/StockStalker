@@ -2,6 +2,7 @@ from tkinter import *
 from tkinter.font import *
 from tkinter import ttk
 from src.MySQL.registro import RegistroMySQL
+from src.Web_Scraping.statusinvest import Webscrapper
 
 
 class WindowCarteira():
@@ -49,17 +50,11 @@ class WindowCarteira():
         cls.codvar = StringVar()
         ttk.Label(space_frm, text="Código",
                   font=Font(family="Comic Sans Ms", size=10, weight="normal")).grid(row=0, column=0, sticky=(E))
-        cod_entry = Entry(space_frm, width=10, textvariable=cls.codvar)
+        cod_entry = Entry(space_frm, width=30, textvariable=cls.codvar)
         cod_entry.grid(row=0, column=1, sticky=(W))
-        # Label text="Tipo" e Entry "type_entry", É PRA SER UM TOGGLE E NAO UM WIDGET ENTRY
-        cls.typevar = StringVar()
-        ttk.Label(space_frm, text="Tipo",
-                  font=Font(family="Comic Sans Ms", size=10, weight="normal")).grid(row=0, column=2, sticky=(E))
-        type_entry = Entry(space_frm, width=10, textvariable=cls.typevar)
-        type_entry.grid(row=0, column=3, sticky=(W))
         # Button "rgst_btn" e Legendas, não vou fazer as legendas agora
-        rgst_btn = Button(space_frm, text="Registrar", bg="#58636E", fg="white", command=cls.registrar)
-        rgst_btn.grid(row=1, column=1, columnspan=3, sticky=(N, S, W, E))
+        rgst_btn = Button(space_frm, text="Registrar", bg="#58636E", fg="white", command=cls.registrar) # TESTE
+        rgst_btn.grid(row=1, column=1, sticky=(N, S, W, E))
 
         # Frame Combobox "cbx_frn" que conterá o combobox e os scrollbars
         # Frame Combobox "cbx_frn"
@@ -80,9 +75,10 @@ class WindowCarteira():
         cls.cbx.pack(fill=BOTH, expand=True)
 
         # Pré adicionando todos os elementos do banco de dados na listbox
+        # VAMO VER
         registros = cls.object_registro.list_elements()
         for i in registros:
-            str_statement = f'{i[0]}    {i[1]}    {i[2]}'
+            str_statement = f"CÓDIGO:{i[0]} | TIPO:{i[1]} | {i[6]}:{i[2]} | {i[7]}:{i[3]} | {i[8]}:{i[4]} | {i[9]}:{i[5]}"
             cls.cbx.insert(END, str_statement)
 
         # POLIMENTOS
@@ -96,8 +92,15 @@ class WindowCarteira():
         # Startando o Loopping
         wndcarteira.mainloop()
 
+
+    def into_wbscrapper(cls):
+        wb = Webscrapper()
+        indicadores = wb.main(cls.codvar.get())
+        msg = f"CÓDIGO:{cls.codvar.get()} | TIPO:{indicadores[1]} | {indicadores[0][0][0]}:{indicadores[0][0][1]} | {indicadores[0][1][0]}:{indicadores[0][1][1]} | {indicadores[0][2][0]}:{indicadores[0][2][1]} | {indicadores[0][3][0]}:{indicadores[0][3][1]}"
+        return indicadores, msg
+
     # TESTE, EMPRESA DEVE SER COLOCADA A PARTIR DO WEBSCRAPPER
     def registrar(cls, *args):
-        registro = cls.object_registro.registrar_registros(cls.codvar.get(), cls.typevar.get())
-        str_statement = f'{cls.codvar.get()}    {cls.typevar.get()}    EMPRESA'
-        cls.cbx.insert(END, str_statement)
+        stt = cls.into_wbscrapper()
+        if cls.object_registro.registrar_registros(cls.codvar.get(), stt[0]) != False:
+            cls.cbx.insert(0, stt[1])

@@ -1,23 +1,25 @@
+import time # Teste
 from tkinter import *
 from tkinter.font import *
 from tkinter import ttk
 from src.MySQL.login import LoginMySQL
+from window_carteira_class import WindowCarteira
 
 
-class LoginWindow():
+class LoginWindow:
 
 
     def __init__(cls):
         cls.object_login = LoginMySQL()
 
-        wndlogin = Tk()
-        wndlogin.title("ActionStalker")
-        wndlogin.geometry("500x250+100+100")
+        cls.wndlogin = Tk()
+        cls.wndlogin.title("ActionStalker")
+        cls.wndlogin.geometry("500x250+100+100")
 
-        mainframe = ttk.Frame(wndlogin)
+        mainframe = ttk.Frame(cls.wndlogin)
         mainframe.grid(column=0, row=0, sticky=(N, W, E, S))
-        wndlogin.columnconfigure(0, weight=1)
-        wndlogin.rowconfigure(0, weight=1)
+        cls.wndlogin.columnconfigure(0, weight=1)
+        cls.wndlogin.rowconfigure(0, weight=1)
 
         # Frame que conterá a label "LOGIN", label "LOGIN"
         lbl_lgin_frm = Frame(mainframe, bg="Black")
@@ -45,7 +47,7 @@ class LoginWindow():
         pass_entry.grid_configure(padx=5, pady=5)
 
         # Botão "Logar"
-        btn_log = Button(lgn_frm, text="Logar", bg="Black", fg="white", relief="flat", command=cls.logar,
+        btn_log = Button(lgn_frm, text="Logar", bg="Black", fg="white", relief="flat", command=cls.for_carteira_window,
                          font=Font(family="Arial Black", size=9, weight="normal"))
         btn_log.grid(column=1, row=3, sticky=(N, W, S, E), columnspan=1)
         btn_log.grid_configure(padx=5, pady=5)
@@ -62,8 +64,8 @@ class LoginWindow():
 
         # Botão Quit
 
-        wndlogin.bind("<Return>", cls.logar)
-        wndlogin.mainloop()
+        cls.wndlogin.bind("<Return>", cls.for_carteira_window)
+        cls.wndlogin.mainloop()
 
 
     def logar(cls, *args):
@@ -72,12 +74,14 @@ class LoginWindow():
         cls.uservar.set("")
         if credenciais:
             cls.lbl["text"] = "ACESSO PERMITIDO"
+            return True
         else:
             cls.lbl["text"] = "ACESSO NEGADO"
+            return False
 
 
 
-    def registrar(cls):
+    def registrar(cls, *args):
         registro = cls.object_login.registrar_login(cls.uservar.get(), cls.passvar.get())
 
         if registro == None:
@@ -89,3 +93,12 @@ class LoginWindow():
 
         cls.passvar.set("")
         cls.uservar.set("")
+
+
+    # TESTE
+    def for_carteira_window(cls, *args):
+        if cls.logar():
+            cls.wndlogin.destroy()
+            cls.wndcart = WindowCarteira()
+        else:
+            pass

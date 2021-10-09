@@ -1,34 +1,12 @@
-#aplicação 2 webscraping para conseguir acessar o módulo de pesquisa do site
-
-import soupsieve.css_parser
 from bs4 import BeautifulSoup
-import requests                                                 #biblioteca para usar sites web
+import requests  # biblioteca para usar sites web
 
+acaodigitada = input().strip()
 
-print('Digite o papel a ser pesquisado aqui:')
-acaodigitada = input().lower().strip()
-
-acao = acaodigitada.split()
-
-if acao[0] == 'tesouro':
-    acaodigitada = acaodigitada.split()
-    acaodigitada = '-'.join(acaodigitada)
-
-else:
-    acaodigitada = acaodigitada.replace(" ", "")                    #remove espaços digitados erradamente
-
-#
-#
-#
-#
-
-
-#identificando o tipo de papel digitado
-
-urla = "https://statusinvest.com.br/acoes/"+acaodigitada
-urlfii = "https://statusinvest.com.br/fundos-imobiliarios/"+acaodigitada
-urlfin = "https://statusinvest.com.br/fundos-de-investimento/"+acaodigitada
-urlbdr = "https://statusinvest.com.br/bdrs/"+acaodigitada
+urla = "https://statusinvest.com.br/acoes/" + acaodigitada
+urlfii = "https://statusinvest.com.br/fundos-imobiliarios/" + acaodigitada
+urlfin = "https://statusinvest.com.br/fundos-de-investimento/" + acaodigitada
+urlbdr = "https://statusinvest.com.br/bdrs/" + acaodigitada
 urltes = "https://statusinvest.com.br/tesouro/" + acaodigitada
 
 urls = [urla, urlfii, urlfin, urlbdr, urltes]
@@ -40,131 +18,39 @@ for enum in range(0, 5):
     doc = BeautifulSoup(result, "html.parser")
 
     tag = doc.find(class_="d-block mb-1 fw-900")
-    if(hasattr(tag, 'OPS. . .')):                               #verificando se o objeto possui atributo string na classe
+    if (hasattr(tag, 'OPS. . .')):  # verificando se o objeto possui atributo string na classe
         if tag.string == 'OPS. . .':
-            #print(f'error, testar a outra url')
+            # print(f'error, testar a outra url')
             error = 1
-            #print(enum)
+            # print(enum)
 
     else:
         error = 0
         break
 
-
-
-if(error == 1):
+if (error == 1):
     print(f'Papel digitado inexistente')
     exit()
-
 
 result = requests.get(urls[enum]).text
 doc = BeautifulSoup(result, "html.parser")
 
-#print(urls[enum])
 
+values = doc.find_all(class_="value")
 
-#fim da identificacao do papel
-#
-#
-#
-#
-#
+list_values = []
 
+k = 4 if urls[enum] == urltes else 5
 
-#começo da busca dos valores
+list_iteravel = values[:k]
+for i in range(0, len(list_iteravel)):
+    list_values.append(list_iteravel[i].string)
 
-
-tag = doc.find(class_ = "value")                                #função para procurar classe com value como parametro, limite de 1
-
-
-valorpapel = tag.string                                              #captura a string da tag
-print("R$: ", valorpapel)
-
-
-
-tag = doc.find_all(class_ = "value")                                 #procurando pela classe com o valor do papel
-
-
-
-contador = 0
-
-
-#tratando a exceção do tesouro que não tem dividend yield e os titulos
-
-
-
-
-if urls[enum] == urltes:
-    nome = doc.find_all(class_="title")
-
-
-    list = ["", "", "", ""]
-    listnome = ["", "", "", ""]
-
-    for tags in tag[:4]:
-        list[contador] = tags
-        contador = contador+1
-
-    contador = 0
-
-    for nomes in nome[:4]:
-        listnome[contador] = nomes
-        contador = contador+1
-
-
-    valornome = listnome[0].string                              #títulos dos indices buscados
-    min52sem_nome = listnome[1].string
-    max52sem_nome = listnome[2].string
-    valorizacao_nome = listnome[3].string
-
-
-    min52sem = list[1].string                                   # valor minimo em 52 semanas
-    max52sem = list[2].string                                   # valor maximo em 52 semanas
-    valorizacao = list[3].string                                # valorizacao em 12 meses
-
-
-
-#
-#
-#
-#
-
-
+if urls[enum] == urlfin:
+    msg = f"CÓDIGO:{acaodigitada} | TIPO:1 | RENTABILIDADE(12M):{list_values[0]} | RENTABILIDADE(24M):{list_values[1]} | VOLATILIDADE(12M):{list_values[2]} | ÍNDICE DE SHARPE(6M):{list_values[3]} | PATRIMÔNIO LÍQUIDO: {list_values[4]} | PREÇO DA COTA: {list_values[5]}"
+elif urls[enum] == urltes:
+    msg = f"CÓDIGO:{acaodigitada} | TIPO:tesouro | VALOR UNITÁRIO:{list_values[0]} | MIN. 52 SEM.:{list_values[1]} | MÁX. 52 SEM.:{list_values[2]} | VALORIZAÇÃO(12M):{list_values[3]}"
 else:
-    nome = doc.find_all(class_="title m-0")
+    msg = f"CÓDIGO:{acaodigitada} | TIPO:1 | VALOR ATUAL:{list_values[0]} | MIN. 52 SEM.:{list_values[1]} | MÁX. 52 SEM.:{list_values[2]} | DIVIDEND YIELD:{list_values[3]} | VALORIZAÇÃO (12M):{list_values[4]}"
 
-
-    list = ["","","","",""]
-
-    listnome = ["", "", "", "", ""]
-
-    for tags in tag[:5]:
-        list[contador] = tags
-        contador = contador+1
-
-    contador = 0
-
-    for nomes in nome[:5]:
-        listnome[contador] = nomes
-        contador = contador + 1
-
-
-    valornome = listnome[0].string                                        #títulos dos indices buscados
-    min52sem_nome = listnome[1].string
-    max52sem_nome = listnome[2].string
-    dividendyield_nome = listnome[3].string
-    valorizacao_nome = listnome[4].string
-
-
-    min52sem = list[1].string                                               #valor minimo em 52 semanas
-    max52sem = list[2].string                                               #valor maximo em 52 semanas
-    dividendyield = list[3].string                                          #dividend yield
-    valorizacao = list[4].string                                            #valorizacao em 12 meses
-
-
-
-#fim da busca dos valores
-#
-#
-#
-#
+print(msg)

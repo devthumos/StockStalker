@@ -62,6 +62,9 @@ class WindowCarteira:
         # Button "rgst_btn" e Legendas, não vou fazer as legendas agora
         rgst_btn = ttk.Button(self.space_frm, text="Registrar", command=self.registrar, style="primary.TButton") # TESTE
         rgst_btn.grid(row=1, column=1, sticky=(N, S, W, E))
+        # Refresh Button / Vai ser uma imagem
+        refresh_btn = ttk.Button(self.space_frm, text="Refresh", command=self.refresh, style="primary.TButton")
+        refresh_btn.grid(row=1, column=2, sticky=(E), padx="10 0")
 
 
     def treeview_frms(self):
@@ -236,6 +239,13 @@ class WindowCarteira:
              elif i[1] == "Tesouro":
                  self.treetesouro.insert('', 0, text=i[0], values=(i[3], i[2], i[4], i[5],
                                                                         i[6]))
+                    
+    def refresh(self):
+        self.treemajor.delete(*self.treemajor.get_children())
+        self.treefundos.delete(*self.treefundos.get_children())
+        self.treetesouro.delete(*self.treetesouro.get_children())
+
+        self.filltree()
 
     def main(self):
         self.lbl_lgin_frm()

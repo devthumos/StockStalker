@@ -1,0 +1,5 @@
+pymysql
+beautifulsoup4
+requests
+webdriver-manager
+ttkbootstrap

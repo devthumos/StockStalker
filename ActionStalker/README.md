@@ -83,7 +83,7 @@ _Lembre-se que o servidor local deve estar rodando para que o Action Stalker fun
 ## Não quero Mais ver sobre esse negócio!! 😡
 ### 🎲  Removendo items (passo 1)
 ![SignUp Mobile](imgs_readme/remover.png)<br>
-- Para remover qualquer negócio, clique em apenas um ou utilize o "Ctrl" e seleciona vários negócios
+- Para remover qualquer negócio, clique em apenas um ou utilize o "Ctrl" e selecione vários negócios
 - Clique no botão "Remover" e pronto!!
 ### 🛠 Tecnologias
 

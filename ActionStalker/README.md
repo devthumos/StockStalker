@@ -71,7 +71,7 @@ _Lembre-se que o servidor local deve estar rodando para que o Action Stalker fun
 ### 🎲  Certo, estou na carteira, o que eu faço?? (passo 2)
 ![SignUp Mobile](imgs_readme/carteira.png)<br>
 - Insira o código da FII/Ação/BDRS que deseja acompanhar ou o nome do fundo de investimento/tesouro, com "-" em vez de espaços, e aperte no botão "Registrar"
-- Caso não saiba que código colocar ou o nome do fundo de investimento/tesouro, navegue pelo site [https://statusinvest.com.br] e copie a parte final do link
+- Caso não saiba que código colocar ou o nome do fundo de investimento/tesouro, navegue pelo [statusinvest](https://statusinvest.com.br) e copie a parte final do link
 ![SignUp Mobile](imgs_readme/link.png)
 
 ### 🎲  Código adicionado (passo 3)
